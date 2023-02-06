@@ -6,7 +6,9 @@ import {createBrowserRouter, RouterProvider} from 'react-router-dom';
 import {store} from './app/store';
 import App from './App';
 import {Home} from './Home';
+
 import {Counter} from './features/counter/Counter';
+import { StockTool } from './features/stockTool/StockTool';
 
 import './index.scss';
 
@@ -23,6 +25,10 @@ const router = createBrowserRouter([
       {
         path: 'counter-tool',
         element: <Counter />,
+      },
+      {
+        path: 'stock-tool',
+        element: <StockTool />,
       },
     ],
   },

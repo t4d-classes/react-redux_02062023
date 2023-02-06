@@ -22,6 +22,9 @@ function App() {
               <LinkContainer to="/counter-tool">
                 <Nav.Link>Counter Tool</Nav.Link>
               </LinkContainer>
+              <LinkContainer to="/stock-tool">
+                <Nav.Link>Stock Tool</Nav.Link>
+              </LinkContainer>
             </Nav>
           </Navbar.Collapse>
         </Container>
