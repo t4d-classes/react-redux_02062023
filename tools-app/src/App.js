@@ -25,6 +25,9 @@ function App() {
               <LinkContainer to="/stock-tool">
                 <Nav.Link>Stock Tool</Nav.Link>
               </LinkContainer>
+              <LinkContainer to="/crypto-tool">
+                <Nav.Link>Crypto Tool</Nav.Link>
+              </LinkContainer>
             </Nav>
           </Navbar.Collapse>
         </Container>

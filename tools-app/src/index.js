@@ -9,6 +9,7 @@ import {Home} from './Home';
 
 import {Counter} from './features/counter/Counter';
 import { StockTool } from './features/stockTool/StockTool';
+import { CryptoTool } from './features/cryptoTool/CryptoTool';
 
 import './index.scss';
 
@@ -30,6 +31,11 @@ const router = createBrowserRouter([
         path: 'stock-tool',
         element: <StockTool />,
       },
+      {
+        path: 'crypto-tool',
+        element: <CryptoTool />,
+      },
+
     ],
   },
 ]);
