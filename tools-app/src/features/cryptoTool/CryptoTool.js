@@ -1,5 +1,7 @@
 import { useState, useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
+import { lookupCoinPrice, selectCoinName } from './cryptoToolSlice';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -9,6 +11,9 @@ import Card from 'react-bootstrap/Card';
 
 
 export function CryptoTool() {
+
+  const coinName = useSelector(selectCoinName);
+  const dispatch = useDispatch();  
 
   const [
     coinNameInput, // state value on each render
@@ -23,6 +28,10 @@ export function CryptoTool() {
     setCoinNameInput(evt.target.value);
 
   }, []);
+
+  const lookupButtonClick = useCallback(() => {
+    dispatch(lookupCoinPrice(coinNameInput));
+  }, [dispatch, coinNameInput]);  
 
 
   return (
@@ -43,19 +52,22 @@ export function CryptoTool() {
                   onChange={coinNameInputChange} />
               </Col>
               <Col>
-                <Button variant="primary">Lookup</Button>
+                <Button variant="primary" onClick={lookupButtonClick}>Lookup</Button>
               </Col>
             </Form.Group>
           </Form>
         </Col>
       </Row>
-      {coinNameInput && <Row className="mt-4">
+      {coinName && <Row className="mt-4">
         <Col className="text-start">
           <Card>
             <Card.Body>
               <Card.Title>
-                <b>{coinNameInput}</b>
+                <b>{coinName}</b>
               </Card.Title>
+              <Card.Text>
+                Last Updated: {new Date().toLocaleString()}
+              </Card.Text>              
             </Card.Body>
           </Card>
         </Col>  

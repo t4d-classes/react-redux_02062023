@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { lookupStockPrice, selectStockSymbol } from './stockToolSlice';
+import {selectStock, getStockAsync} from './stockToolSlice';
 
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
@@ -10,10 +10,38 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Card from 'react-bootstrap/Card';
 
+function getBackgroundIndicator(stockChange) {
+  if (stockChange > 0) {
+    return 'green';
+  } else if (stockChange < 0) {
+    return 'crimson';
+  } else {
+    return 'blue';
+  }
+}
+
+function getArrowIndicator(stockChange) {
+  if (stockChange < 0) {
+    return <i className="bi bi-arrow-down-right"></i>;
+  } else if (stockChange > 0) {
+    return <i className="bi bi-arrow-up-right"></i>;
+  }
+}
+
+function getSignIndicator(stockChange) {
+  if (stockChange > 0) {
+    return '+';
+  }
+}
+
 
 export function StockTool() {
 
-  const stockSymbol = useSelector(selectStockSymbol);
+  const stock = useSelector(selectStock);
+  const stockPriceChange = stock.close - stock.open;
+  const stockPricePercentChange =
+    ((stock.close - stock.open) / stock.open) * 100;
+    
   const dispatch = useDispatch();
 
   const [
@@ -31,7 +59,7 @@ export function StockTool() {
   }, []);
 
   const lookupButtonClick = useCallback(() => {
-    dispatch(lookupStockPrice(stockSymbolInput));
+    dispatch(getStockAsync(stockSymbolInput));
   }, [dispatch, stockSymbolInput]);
 
   return (
@@ -60,20 +88,35 @@ export function StockTool() {
           </Form>
         </Col>
       </Row>
-      {stockSymbol && <Row className="mt-4">
-        <Col className="text-start">
-          <Card>
-            <Card.Body>
-              <Card.Title>
-                <b>{stockSymbol}</b>
-              </Card.Title>
-              <Card.Text>
-                Last Updated: {new Date().toLocaleString()}
-              </Card.Text>
-            </Card.Body>
-          </Card>
-        </Col>  
-      </Row>}
+      {stock.symbol && (
+        <Row className="mt-4">
+          <Col className="text-start">
+            <Card>
+              <Card.Body
+                style={{
+                  backgroundColor: getBackgroundIndicator(stockPriceChange),
+                  color: 'white',
+                }}>
+                <Card.Title>
+                  <b>
+                    {stock.symbol} {stock.close}
+                    {getArrowIndicator(stockPriceChange)}
+                  </b>
+                  <span className="ms-4">
+                    {getSignIndicator(stockPriceChange)}
+                    {stockPriceChange.toFixed(2)}
+                  </span>
+                  <span className="ms-2">
+                    ({getSignIndicator(stockPriceChange)}
+                    {stockPricePercentChange.toFixed(2)}%)
+                  </span>
+                </Card.Title>
+                <Card.Text>Last Updated: {stock?.lastUpdated}</Card.Text>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+      )}
     </Container>
   );
 
