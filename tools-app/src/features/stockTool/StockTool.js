@@ -1,4 +1,7 @@
 import { useState, useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+
+import { lookupStockPrice, selectStockSymbol } from './stockToolSlice';
 
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
@@ -9,6 +12,9 @@ import Card from 'react-bootstrap/Card';
 
 
 export function StockTool() {
+
+  const stockSymbol = useSelector(selectStockSymbol);
+  const dispatch = useDispatch();
 
   const [
     stockSymbolInput, // state value on each render
@@ -23,6 +29,10 @@ export function StockTool() {
     setStockSymbolInput(evt.target.value);
 
   }, []);
+
+  const lookupButtonClick = useCallback(() => {
+    dispatch(lookupStockPrice(stockSymbolInput));
+  }, [dispatch, stockSymbolInput]);
 
   return (
     <Container fluid>
@@ -42,19 +52,24 @@ export function StockTool() {
                   onChange={stockSymbolInputChange} />
               </Col>
               <Col>
-                <Button variant="primary">Lookup</Button>
+                <Button variant="primary" onClick={lookupButtonClick}>
+                  Lookup
+                </Button>
               </Col>
             </Form.Group>
           </Form>
         </Col>
       </Row>
-      {stockSymbolInput && <Row className="mt-4">
+      {stockSymbol && <Row className="mt-4">
         <Col className="text-start">
           <Card>
             <Card.Body>
               <Card.Title>
-                <b>{stockSymbolInput}</b>
+                <b>{stockSymbol}</b>
               </Card.Title>
+              <Card.Text>
+                Last Updated: {new Date().toLocaleString()}
+              </Card.Text>
             </Card.Body>
           </Card>
         </Col>  
