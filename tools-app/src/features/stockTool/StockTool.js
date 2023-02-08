@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import {selectStock, getStockAsync} from './stockToolSlice';
+import {selectStockPrice, getStockAsync} from './stockToolSlice';
 
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
@@ -10,37 +10,13 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Card from 'react-bootstrap/Card';
 
-function getBackgroundIndicator(stockChange) {
-  if (stockChange > 0) {
-    return 'green';
-  } else if (stockChange < 0) {
-    return 'crimson';
-  } else {
-    return 'blue';
-  }
-}
-
-function getArrowIndicator(stockChange) {
-  if (stockChange < 0) {
-    return <i className="bi bi-arrow-down-right"></i>;
-  } else if (stockChange > 0) {
-    return <i className="bi bi-arrow-up-right"></i>;
-  }
-}
-
-function getSignIndicator(stockChange) {
-  if (stockChange > 0) {
-    return '+';
-  }
-}
-
+import {
+  getBackgroundIndicator, getArrowIndicator, getSignIndicator
+} from '../../utils';
 
 export function StockTool() {
 
-  const stock = useSelector(selectStock);
-  const stockPriceChange = stock.close - stock.open;
-  const stockPricePercentChange =
-    ((stock.close - stock.open) / stock.open) * 100;
+  const stock = useSelector(selectStockPrice);
     
   const dispatch = useDispatch();
 

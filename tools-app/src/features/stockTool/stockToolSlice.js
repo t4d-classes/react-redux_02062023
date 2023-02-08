@@ -59,6 +59,18 @@ export const stockToolSlice = createSlice({
 
 // export const { lookupStockPrice } = stockToolSlice.actions;
 
-export const selectStock = (state) => state.stockTool.stock;
+export const selectStockPrice = ({ stock }) => {
+
+  // const stock = state.stock;
+  // const { stock } = state;
+ 
+  return {
+    symbol: stock.symbol,
+    price: stock.close,
+    priceChange: stock.close - stock.open,
+    pricePercentChange: ((stock.close - stock.open) / stock.open) * 100,
+  };
+
+};
 
 export default stockToolSlice.reducer;
