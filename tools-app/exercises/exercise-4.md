@@ -4,7 +4,7 @@
 
 ```javascript
 export async function fetchCoin(coinSymbol) {
-  const url `https://api.coingecko.com/api/v3/simple/price?ids=${coinSymbol}&vs_currencies=usd`;
+  const url = `https://api.coingecko.com/api/v3/simple/price?ids=${coinSymbol}&vs_currencies=usd`;
   const res = await fetch(url);
   const data = await res.json();
   return data[coinSymbol];

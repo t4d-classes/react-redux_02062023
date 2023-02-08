@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { lookupCoinPrice, selectCoinName } from './cryptoToolSlice';
+import { getCoinAsync, selectCoinPrice } from './cryptoToolSlice';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -9,11 +9,15 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Card from 'react-bootstrap/Card';
 
+import {
+  getBackgroundIndicator, getArrowIndicator, getSignIndicator
+} from '../../utils';
+
 
 export function CryptoTool() {
 
-  const coinName = useSelector(selectCoinName);
-  const dispatch = useDispatch();  
+  const coin = useSelector(selectCoinPrice);
+  const dispatch = useDispatch();
 
   const [
     coinNameInput, // state value on each render
@@ -30,8 +34,8 @@ export function CryptoTool() {
   }, []);
 
   const lookupButtonClick = useCallback(() => {
-    dispatch(lookupCoinPrice(coinNameInput));
-  }, [dispatch, coinNameInput]);  
+    dispatch(getCoinAsync(coinNameInput));
+  }, [dispatch, coinNameInput]);
 
 
   return (
@@ -58,19 +62,33 @@ export function CryptoTool() {
           </Form>
         </Col>
       </Row>
-      {coinName && <Row className="mt-4">
+      {coin.name && <Row className="mt-4">
         <Col className="text-start">
           <Card>
-            <Card.Body>
+            <Card.Body style={{
+              backgroundColor: getBackgroundIndicator(coin.priceChange),
+              color: 'white',
+            }}>
               <Card.Title>
-                <b>{coinName}</b>
+                <b>
+                  {coin.name} {coin.price}
+                  {getArrowIndicator(coin.priceChange)}
+                </b>
+                <span className="ms-4">
+                  {getSignIndicator(coin.priceChange)}
+                  {coin.priceChange.toFixed(2)}
+                </span>
+                <span className="ms-2">
+                  ({getSignIndicator(coin.priceChange)}
+                  {coin.percentPriceChange.toFixed(2)}%)
+                </span>
               </Card.Title>
               <Card.Text>
-                Last Updated: {new Date().toLocaleString()}
-              </Card.Text>              
+                Last Updated: {coin.lastUpdated}
+              </Card.Text>
             </Card.Body>
           </Card>
-        </Col>  
+        </Col>
       </Row>}
     </Container>
   );

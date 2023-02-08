@@ -23,3 +23,14 @@ export function getSignIndicator(valueChange) {
     return '+';
   }
 }
+
+export function calcChange(openPrice, closePrice) {
+  if (openPrice === 0) {
+    return [0,0];
+  }
+
+  const priceChange = closePrice - openPrice;
+  const percentPriceChange = (priceChange / openPrice) * 100;
+
+  return [priceChange, percentPriceChange];
+}
