@@ -70,21 +70,21 @@ export function StockTool() {
             <Card>
               <Card.Body
                 style={{
-                  backgroundColor: getBackgroundIndicator(stockPriceChange),
+                  backgroundColor: getBackgroundIndicator(stock.priceChange),
                   color: 'white',
                 }}>
                 <Card.Title>
                   <b>
                     {stock.symbol} {stock.close}
-                    {getArrowIndicator(stockPriceChange)}
+                    {getArrowIndicator(stock.priceChange)}
                   </b>
                   <span className="ms-4">
-                    {getSignIndicator(stockPriceChange)}
-                    {stockPriceChange.toFixed(2)}
+                    {getSignIndicator(stock.priceChange)}
+                    {stock.priceChange.toFixed(2)}
                   </span>
                   <span className="ms-2">
-                    ({getSignIndicator(stockPriceChange)}
-                    {stockPricePercentChange.toFixed(2)}%)
+                    ({getSignIndicator(stock.priceChange)}
+                    {stock.pricePercentChange.toFixed(2)}%)
                   </span>
                 </Card.Title>
                 <Card.Text>Last Updated: {stock?.lastUpdated}</Card.Text>

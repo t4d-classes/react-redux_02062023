@@ -1,6 +1,6 @@
 
 
-const apiKey = 'KVEcZNP4hqKp8sFtIZDDKzsNGPlwtpvX';
+const apiKey = '9wh_hnZyq5QeRasXBWI5gxmExVR3zo_h';
 
 export async function fetchStock(stockSymbol) {
   const url = `https://api.polygon.io/v2/aggs/ticker/${stockSymbol}/prev?apiKey=${apiKey}`;
