@@ -1,7 +1,7 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import {selectStockPrice, getStockAsync} from './stockToolSlice';
+import { selectStockPrice, getStockAsync } from './stockToolSlice';
 
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
@@ -17,13 +17,15 @@ import {
 export function StockTool() {
 
   const stock = useSelector(selectStockPrice);
-    
+
   const dispatch = useDispatch();
 
   const [
     stockSymbolInput, // state value on each render
     setStockSymbolInput, // function to update the state value and trigger a re-render
   ] = useState('' /* initial state value on the first render */);
+
+  const stockSymbolInputElement = useRef(null);
 
   const stockSymbolInputChange = useCallback((evt) => {
 
@@ -34,9 +36,23 @@ export function StockTool() {
 
   }, []);
 
-  const lookupButtonClick = useCallback(() => {
+  const lookupFormSubmit = useCallback((evt) => {
+    evt.preventDefault();
     dispatch(getStockAsync(stockSymbolInput));
+    setStockSymbolInput('');
+
+    if (stockSymbolInputElement.current) {
+      stockSymbolInputElement.current.focus();
+    }
+
   }, [dispatch, stockSymbolInput]);
+
+  useEffect(() => {
+    // only going to run on the initial render
+    if (stockSymbolInputElement.current) {
+      stockSymbolInputElement.current.focus();
+    }
+  }, [stockSymbolInputElement]);
 
   return (
     <Container fluid>
@@ -47,16 +63,17 @@ export function StockTool() {
       </Row>
       <Row>
         <Col>
-          <Form>
+          <Form onSubmit={lookupFormSubmit}>
             <Form.Group as={Row}>
               <Form.Label column>Stock Symbol</Form.Label>
               <Col>
                 <Form.Control type="text"
+                  ref={stockSymbolInputElement}
                   value={stockSymbolInput} aria-label="Set stock symbol"
                   onChange={stockSymbolInputChange} />
               </Col>
               <Col>
-                <Button variant="primary" onClick={lookupButtonClick}>
+                <Button variant="primary">
                   Lookup
                 </Button>
               </Col>

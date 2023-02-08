@@ -1,4 +1,4 @@
-import {createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { fetchStock } from './stockAPI';
 
 const initialState = {
@@ -73,7 +73,7 @@ export const selectStockPrice = ({ stockTool: { stock } }) => {
       lastUpdated: null,
     };
   }
- 
+
   return {
     symbol: stock.symbol,
     price: stock.close,
