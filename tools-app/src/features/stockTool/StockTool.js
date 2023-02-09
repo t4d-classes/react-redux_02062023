@@ -10,6 +10,8 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Card from 'react-bootstrap/Card';
 
+import { ToolHeader } from '../../components/ToolHeader';
+
 import {
   getBackgroundIndicator, getArrowIndicator, getSignIndicator
 } from '../../utils';
@@ -54,11 +56,14 @@ export function StockTool() {
     }
   }, [stockSymbolInputElement]);
 
+  const headerText = 'Stock Tool';
+
   return (
     <Container fluid>
       <Row className="mb-4">
         <Col className="text-start">
-          <h2>Stock Tool</h2>
+          {/* <ToolHeader toolName="Stock Tool" /> */}
+          <ToolHeader appName="Tools App" toolName="Stock Tool" />
         </Col>
       </Row>
       <Row>

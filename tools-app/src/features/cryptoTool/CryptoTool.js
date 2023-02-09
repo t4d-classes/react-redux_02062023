@@ -42,7 +42,9 @@ export function CryptoTool() {
     <Container fluid>
       <Row className="mb-4">
         <Col className="text-start">
-          <h2>Crypto Tool</h2>
+          <header>
+            <h2>Crypto Tool</h2>
+          </header>
         </Col>
       </Row>
       <Row>
