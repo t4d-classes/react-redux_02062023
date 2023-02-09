@@ -76,6 +76,7 @@ export const selectStockPrice = ({ stockTool: { stock } }) => {
 
   return {
     symbol: stock.symbol,
+    name: stock.symbol,
     price: stock.close,
     priceChange: stock.close - stock.open,
     pricePercentChange: ((stock.close - stock.open) / stock.open) * 100,

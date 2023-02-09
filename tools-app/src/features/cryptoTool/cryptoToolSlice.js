@@ -55,7 +55,7 @@ export const selectCoinPrice = ({ cryptoTool }) => {
     name: cryptoTool.coinName,
     price: cryptoTool.coinPrice,
     priceChange: coinPriceChange,
-    percentPriceChange: coinPercentPriceChange,
+    pricePercentChange: coinPercentPriceChange,
     lastUpdated: cryptoTool.lastUpdated,
   };
 };

@@ -21,6 +21,6 @@
   - Coin Lookup
   - Coin Price
 
-4. Move the `<Card>` and its stock/coind price content to a single, parameterized component named `<CurrentAssetPrice>`. Replace the `<Card>` components in `<StockTool>` and `<CryptoTool>` with the new `<CurrentAssetPrice>` component.
+4. Move the `<Card>` and its stock/coind price content to a single, parameterized component named `<AssetCurrentPrice>`. Replace the `<Card>` components in `<StockTool>` and `<CryptoTool>` with the new `<AssetCurrentPrice>` component.
 
 5. Ensure it works!

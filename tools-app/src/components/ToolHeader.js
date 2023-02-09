@@ -1,4 +1,4 @@
-
+import PropTypes from 'prop-types';
 
 
 export function ToolHeader(props) {
@@ -11,6 +11,15 @@ export function ToolHeader(props) {
   );
 
 }
+
+ToolHeader.defaultProps = {
+  appName: 'Tools App',
+};
+
+ToolHeader.propTypes = {
+  appName: PropTypes.string.isRequired,
+  toolName: PropTypes.string,
+};
 
 // export function ToolHeader({ appName, toolName }) {
 
