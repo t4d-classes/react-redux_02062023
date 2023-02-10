@@ -20,14 +20,3 @@ ToolHeader.propTypes = {
   appName: PropTypes.string.isRequired,
   toolName: PropTypes.string,
 };
-
-// export function ToolHeader({ appName, toolName }) {
-
-//   return (
-//     <header>
-//       <h1>{appName}</h1>
-//       <h2>{toolName}</h2>
-//     </header>
-//   );
-
-// }

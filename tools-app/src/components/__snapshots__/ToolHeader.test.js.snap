@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`snapshot ToolHeader component 1`] = `
+<header>
+  <h1>
+    The Tools
+  </h1>
+  <h2>
+    Test Tool
+  </h2>
+</header>
+`;
