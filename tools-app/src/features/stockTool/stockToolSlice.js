@@ -8,6 +8,7 @@ import {
 import debounce from 'lodash.debounce';
 
 const initialState = {
+  activeStockSymbol: '',
   stocks: [], // the structure of the stock object is no longer apparent
   status: 'idle',
 };
@@ -76,7 +77,11 @@ export const removeStockFromWatchListAsync = createAsyncThunk(
 export const stockToolSlice = createSlice({
   name: 'stockTool',
   initialState,
-  reducers: {},
+  reducers: {
+    setActiveStockSymbol: (state, action) => {
+      state.activeStockSymbol = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(addToWatchListAsync.pending, (state) => {
@@ -145,6 +150,8 @@ export const stockToolSlice = createSlice({
   },
 });
 
+export const { setActiveStockSymbol } = stockToolSlice.actions;
+
 export const selectStocks = ({ stockTool: { stocks } }) => {
   return stocks.map(stock => ({
     symbol: stock.symbol,
@@ -154,6 +161,12 @@ export const selectStocks = ({ stockTool: { stocks } }) => {
     pricePercentChange: ((stock.close - stock.open) / stock.open) * 100,
     lastUpdated: stock.lastUpdated
   }));
+};
+
+export const selectActiveStock = ({ stockTool }) => {
+  return stockTool.stocks.find(
+    (stock) => stockTool.activeStockSymbol === stock.symbol,
+  );
 };
 
 export default stockToolSlice.reducer;

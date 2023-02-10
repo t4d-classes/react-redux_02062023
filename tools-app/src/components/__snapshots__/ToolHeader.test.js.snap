@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`snapshot ToolHeader component 1`] = `
+exports[`Snapshot ToolHeader Component 1`] = `
 <header>
   <h1>
     The Tools

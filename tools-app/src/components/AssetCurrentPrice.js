@@ -6,11 +6,15 @@ import {
   getBackgroundIndicator, getArrowIndicator, getSignIndicator
 } from '../utils';
 
-export function AssetCurrentPrice({ asset, onRemove }) {
+export function AssetCurrentPrice({ asset, onRemove, onView }) {
 
   const removeAssetClick = useCallback(() => {
     onRemove(asset.name);
   }, [onRemove, asset]);
+
+  const viewAssetClick = useCallback(() => {
+    onView(asset.name);
+  }, [onView, asset]);
 
   return (
     <Card>
@@ -35,9 +39,12 @@ export function AssetCurrentPrice({ asset, onRemove }) {
               </span>
             </Col>
             <Col xs={3} className="text-end">
-              <Button variant='light' onClick={removeAssetClick}>
+              {onView && <Button className="me-2" variant='light' onClick={viewAssetClick}>
+                <i className="bi bi-file-bar-graph"></i>
+              </Button>}
+              {onRemove && <Button variant='light' onClick={removeAssetClick}>
                 <i className="bi bi-trash"></i>
-              </Button>
+              </Button>}
             </Col>
           </Row>
 

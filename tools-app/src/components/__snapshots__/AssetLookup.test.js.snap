@@ -1,0 +1,44 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Snapshot ToolHeader Component 1`] = `
+<form
+  aria-label="form"
+  className=""
+  onSubmit={[Function]}
+  style={
+    Object {
+      "maxWidth": "500px",
+    }
+  }
+>
+  <div
+    className="row"
+  >
+    <label
+      className="form-label col-form-label col"
+    />
+    <div
+      className="col"
+    >
+      <input
+        aria-label="Set undefined"
+        className="form-control"
+        onChange={[Function]}
+        type="text"
+        value=""
+      />
+    </div>
+    <div
+      className="col"
+    >
+      <button
+        className="btn btn-primary"
+        disabled={false}
+        type="submit"
+      >
+        Add to Watch List
+      </button>
+    </div>
+  </div>
+</form>
+`;

@@ -5,7 +5,7 @@ import renderer from "react-test-renderer";
 
 import { ToolHeader } from "./ToolHeader";
 
-test("snapshot ToolHeader component", () => {
+test("Snapshot ToolHeader Component", () => {
   expect(
     renderer.create(
       <ToolHeader appName="The Tools" toolName="Test Tool" />
@@ -13,7 +13,7 @@ test("snapshot ToolHeader component", () => {
   ).toMatchSnapshot();
 });
 
-describe("ToolHeader component", () => {
+describe("DOM Test ToolHeader Component", () => {
   test("renders ToolHeader component", () => {
     render(
       <ToolHeader appName="The Tools" toolName="Test Tool" />

@@ -1,14 +1,14 @@
 import React from 'react';
-import {createRoot} from 'react-dom/client';
-import {Provider} from 'react-redux';
-import {createBrowserRouter, RouterProvider} from 'react-router-dom';
+import { createRoot } from 'react-dom/client';
+import { Provider } from 'react-redux';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
-import {store} from './app/store';
+import { store } from './app/store';
 import App from './App';
-import {Home} from './Home';
+import { Home } from './Home';
 
-import {Counter} from './features/counter/Counter';
-import { StockTool } from './features/stockTool/StockTool';
+import { Counter } from './features/counter/Counter';
+import { StockTool, StockDetail } from './features/stockTool';
 import { CryptoTool } from './features/cryptoTool/CryptoTool';
 
 import './index.scss';
@@ -30,6 +30,16 @@ const router = createBrowserRouter([
       {
         path: 'stock-tool',
         element: <StockTool />,
+        children: [
+          {
+            path: '',
+            element: <div>Select Stock</div>,
+          },
+          {
+            path: 'view/:stockSymbol',
+            element: <StockDetail />,
+          },
+        ],
       },
       {
         path: 'crypto-tool',

@@ -1,7 +1,9 @@
 import { useCallback, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { Outlet, useNavigate } from 'react-router-dom';
 
 import {
+  setActiveStockSymbol,
   selectStocks,
   addToWatchListAsync,
   refreshWatchListAsync,
@@ -21,7 +23,7 @@ export function StockTool() {
   const stocks = useSelector(selectStocks);
 
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
 
   const stockSymbolInputElement = useRef(null);
 
@@ -56,6 +58,11 @@ export function StockTool() {
     }
   }, [dispatch]);
 
+  const viewStockFromWatchList = useCallback((stockSymbol) => {
+    dispatch(setActiveStockSymbol(stockSymbol));
+    navigate(`/stock-tool/view/${stockSymbol}`);
+  }, [dispatch, navigate]);
+
   return (
     <Container fluid>
       <Row className="mb-4">
@@ -63,38 +70,49 @@ export function StockTool() {
           <ToolHeader toolName="Stock Tool" />
         </Col>
       </Row>
-      <SectionHeader headerText="Stock Lookup" />
       <Row>
         <Col>
-          <AssetLookup
-            assetTypeLabel="Stock Symbol"
-            onSubmit={addStockToWatchListSubmit}
-            ref={stockSymbolInputElement} />
+          <SectionHeader headerText="Stock Lookup" />
+          <Row>
+            <Col>
+              <AssetLookup
+                assetTypeLabel="Stock Symbol"
+                onSubmit={addStockToWatchListSubmit}
+                ref={stockSymbolInputElement} />
+            </Col>
+          </Row>
+          <Row className="mt-4">
+            <Col className="text-start">
+              <h3>Watch List</h3>
+            </Col>
+            <Col className="text-start">
+              <Button variant="secondary" onClick={refreshWatchListClick}>
+                Refresh
+              </Button>
+            </Col>
+          </Row>
+          {!stocks.length && (
+            <Row>
+              <Col className="text-start ms-1 mt-2">
+                No stocks on the watch list.
+              </Col>
+            </Row>
+          )}
+          {stocks.map((stock) =>
+            <Row className="mt-4" key={stock.name}>
+              <Col className="text-start">
+                <AssetCurrentPrice asset={stock}
+                  onRemove={removeStockFromWatchList}
+                  onView={viewStockFromWatchList} />
+              </Col>
+            </Row>)}
+        </Col>
+        <Col>
+          <Outlet />
         </Col>
       </Row>
-      <Row className="mt-4">
-        <Col className="text-start">
-          <h3>Watch List</h3>
-        </Col>
-        <Col className="text-start">
-          <Button variant="secondary" onClick={refreshWatchListClick}>
-            Refresh
-          </Button>
-        </Col>
-      </Row>
-      {!stocks.length && (
-        <Row>
-          <Col className="text-start ms-1 mt-2">
-            No stocks on the watch list.
-          </Col>
-        </Row>
-      )}
-      {stocks.map((stock) =>
-        <Row className="mt-4" key={stock.name}>
-          <Col className="text-start">
-            <AssetCurrentPrice asset={stock} onRemove={removeStockFromWatchList} />
-          </Col>
-        </Row>)}
+
+
     </Container>
   );
 
