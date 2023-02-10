@@ -1,48 +1,76 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchStock } from './stockAPI';
+import { createAsyncThunk, createSlice, createAction } from '@reduxjs/toolkit';
+import {
+  fetchStock,
+  fetchWatchList,
+  saveWatchList,
+  fetchStocks,
+} from './stockAPI';
+import debounce from 'lodash.debounce';
 
 const initialState = {
-  stock: {
-    symbol: '',
-    open: 0,
-    close: 0,
-    high: 0,
-    low: 0,
-    volume: 0,
-    volumeWeightedAveragePrice: 0,
-    numberOfTransactions: 0,
-    lastUpdated: null,
-  },
+  stocks: [],
   status: 'idle',
 };
 
 export const getStockAsync = createAsyncThunk(
-  'stockTool/fetchStock', // action name
+  'stockTool/fetchStock',
   async (stockSymbol) => {
     const stockData = await fetchStock(stockSymbol);
     return stockData;
-  }
+  },
 );
+
+export const addToWatchListAsync = createAsyncThunk(
+  'stockTool/addToWatchList',
+  async (stockSymbol) => {
+    const stockWatchLists = await fetchWatchList('My Stocks');
+    const stockWatchList = stockWatchLists[0];
+    if (stockWatchList.stockSymbols.includes(stockSymbol)) {
+      return;
+    }
+
+    stockWatchList.stockSymbols.push(stockSymbol);
+    await saveWatchList(stockWatchList);
+
+    const stockData = await fetchStock(stockSymbol);
+    return stockData;
+  },
+);
+
+const refreshWatchListFulfilled = createAction(
+  'stockTool/refreshWatchListFulfilled',
+);
+
+export const refreshWatchListAsync = createAsyncThunk(
+  'stockTool/refreshWatchListDebounced',
+  debounce(async (_, { dispatch }) => {
+    const stockWatchLists = await fetchWatchList('My Stocks');
+    const stockWatchList = stockWatchLists[0];
+    const stocks = await fetchStocks(stockWatchList.stockSymbols);
+    dispatch(refreshWatchListFulfilled(stocks));
+  }, 200),
+);
+
+
 
 export const stockToolSlice = createSlice({
   name: 'stockTool',
-  initialState, // short-hand property, initialState: initialState,
-  reducers: {
-    // action = reducer
-    // defining both an action and a reducer
-    // lookupStockPrice: (state, action) => {
-    //   state.stockSymbol = action.payload;
-    // },
-  },
+  initialState,
+  reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(getStockAsync.pending, (state) => {
+      .addCase(addToWatchListAsync.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(getStockAsync.fulfilled, (state, action) => {
-        const stockData = action.payload;
+      .addCase(addToWatchListAsync.fulfilled, (state, action) => {
         state.status = 'idle';
-        state.stock = {
+
+        if (!action.payload) {
+          return;
+        }
+
+        const stockData = action.payload;
+        const stock = {
           symbol: stockData.T,
           open: stockData.o,
           close: stockData.c,
@@ -53,36 +81,44 @@ export const stockToolSlice = createSlice({
           numberOfTransactions: stockData.n,
           lastUpdated: new Date(stockData.t).toLocaleString(),
         };
+        state.stocks.push(stock);
       })
-  }
+      .addCase(refreshWatchListAsync.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(refreshWatchListFulfilled, (state, action) => {
+        state.status = 'idle';
+
+        if (!action.payload) {
+          return;
+        }
+
+        state.stocks = action.payload.map((stockData) => {
+          return {
+            symbol: stockData.T,
+            open: stockData.o,
+            close: stockData.c,
+            low: stockData.l,
+            high: stockData.h,
+            volume: stockData.v,
+            volumeWeightedAveragePrice: stockData.vw,
+            numberOfTransactions: stockData.n,
+            lastUpdated: new Date(stockData.t).toLocaleString(),
+          };
+        });
+      });
+  },
 });
 
-// export const { lookupStockPrice } = stockToolSlice.actions;
-
-export const selectStockPrice = ({ stockTool: { stock } }) => {
-
-  // const stock = state.stock;
-  // const { stock } = state;
-
-  if (!stock.symbol) {
-    return {
-      symbol: '',
-      price: 0,
-      priceChange: 0,
-      pricePercentChange: 0,
-      lastUpdated: null,
-    };
-  }
-
-  return {
+export const selectStocks = ({ stockTool: { stocks } }) => {
+  return stocks.map(stock => ({
     symbol: stock.symbol,
     name: stock.symbol,
     price: stock.close,
     priceChange: stock.close - stock.open,
     pricePercentChange: ((stock.close - stock.open) / stock.open) * 100,
     lastUpdated: stock.lastUpdated
-  };
-
+  }));
 };
 
 export default stockToolSlice.reducer;

@@ -1,7 +1,11 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { selectStockPrice, getStockAsync } from './stockToolSlice';
+import {
+  selectStocks,
+  addToWatchListAsync,
+  refreshWatchListAsync,
+} from './stockToolSlice';
 
 import { Button, Container, Row, Col, Form } from 'react-bootstrap';
 
@@ -10,7 +14,7 @@ import { ToolHeader, SectionHeader, AssetCurrentPrice } from '../../components';
 
 export function StockTool() {
 
-  const stock = useSelector(selectStockPrice);
+  const stocks = useSelector(selectStocks);
 
   const dispatch = useDispatch();
 
@@ -30,23 +34,28 @@ export function StockTool() {
 
   }, []);
 
-  const lookupFormSubmit = useCallback((evt) => {
-    evt.preventDefault();
-    dispatch(getStockAsync(stockSymbolInput));
-    setStockSymbolInput('');
-
-    if (stockSymbolInputElement.current) {
-      stockSymbolInputElement.current.focus();
-    }
-
-  }, [dispatch, stockSymbolInput]);
+  const addStockToWatchListSubmit = useCallback(
+    (evt) => {
+      evt.preventDefault();
+      dispatch(addToWatchListAsync(stockSymbolInput));
+      setStockSymbolInput('');
+      if (stockSymbolInputElement.current) {
+        stockSymbolInputElement.current.focus();
+      }
+    },
+    [dispatch, stockSymbolInput],
+  );
 
   useEffect(() => {
-    // only going to run on the initial render
+    dispatch(refreshWatchListAsync());
     if (stockSymbolInputElement.current) {
       stockSymbolInputElement.current.focus();
     }
-  }, [stockSymbolInputElement]);
+  }, [dispatch]);
+
+  const refreshWatchListClick = useCallback(() => {
+    dispatch(refreshWatchListAsync());
+  }, [dispatch]);
 
   return (
     <Container fluid>
@@ -58,33 +67,49 @@ export function StockTool() {
       <SectionHeader headerText="Stock Lookup" />
       <Row>
         <Col>
-          <Form onSubmit={lookupFormSubmit}>
+          <Form onSubmit={addStockToWatchListSubmit}>
             <Form.Group as={Row}>
               <Form.Label column>Stock Symbol</Form.Label>
               <Col>
-                <Form.Control type="text"
+                <Form.Control
+                  type="text"
                   ref={stockSymbolInputElement}
-                  value={stockSymbolInput} aria-label="Set stock symbol"
+                  value={stockSymbolInput}
+                  aria-label="Set stock symbol"
                   onChange={stockSymbolInputChange} />
               </Col>
               <Col>
                 <Button variant="primary" type="submit">
-                  Lookup
+                  Add to Watch List
                 </Button>
               </Col>
             </Form.Group>
           </Form>
         </Col>
       </Row>
-      {stock.symbol && (
-        <>
-          <SectionHeader headerText="Stock Price" />
-          <Row className="mt-4">
-            <Col className="text-start">
-              <AssetCurrentPrice asset={stock} />
-            </Col>
-          </Row>
-        </>)}
+      <Row className="mt-4">
+        <Col className="text-start">
+          <h3>Watch List</h3>
+        </Col>
+        <Col className="text-start">
+          <Button variant="secondary" onClick={refreshWatchListClick}>
+            Refresh
+          </Button>
+        </Col>
+      </Row>
+      {!stocks.length && (
+        <Row>
+          <Col className="text-start ms-1 mt-2">
+            No stocks on the watch list.
+          </Col>
+        </Row>
+      )}
+      {stocks.map((stock) =>
+        <Row className="mt-4" key={stock.name}>
+          <Col className="text-start">
+            <AssetCurrentPrice asset={stock} />
+          </Col>
+        </Row>)}
     </Container>
   );
 

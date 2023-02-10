@@ -1,4 +1,16 @@
 {
-  "stockWatchLists": [],
-  "cryptoWatchLists": []
+  "stockWatchLists": [
+    {
+      "id": 1,
+      "name": "My Stocks",
+      "stockSymbols": []
+    }
+  ],
+  "cryptoWatchLists": [
+    {
+      "id": 1,
+      "name": "My Coins",
+      "stockSymbols": []
+    }
+  ]
 }
