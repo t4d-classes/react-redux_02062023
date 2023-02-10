@@ -4,7 +4,6 @@
       "id": 1,
       "name": "My Stocks",
       "stockSymbols": [
-        "MSFT",
         "AAPL"
       ]
     }

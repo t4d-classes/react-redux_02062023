@@ -5,6 +5,7 @@ import {
   selectStocks,
   addToWatchListAsync,
   refreshWatchListAsync,
+  removeStockFromWatchListAsync,
 } from './stockToolSlice';
 
 import { Button, Container, Row, Col } from 'react-bootstrap';
@@ -48,6 +49,13 @@ export function StockTool() {
     }
   }, [dispatch]);
 
+  const removeStockFromWatchList = useCallback((stockSymbol) => {
+    dispatch(removeStockFromWatchListAsync(stockSymbol));
+    if (stockSymbolInputElement.current) {
+      stockSymbolInputElement.current.focus();
+    }
+  }, [dispatch]);
+
   return (
     <Container fluid>
       <Row className="mb-4">
@@ -84,7 +92,7 @@ export function StockTool() {
       {stocks.map((stock) =>
         <Row className="mt-4" key={stock.name}>
           <Col className="text-start">
-            <AssetCurrentPrice asset={stock} />
+            <AssetCurrentPrice asset={stock} onRemove={removeStockFromWatchList} />
           </Col>
         </Row>)}
     </Container>

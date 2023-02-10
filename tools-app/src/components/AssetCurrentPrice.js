@@ -1,11 +1,17 @@
-import Card from 'react-bootstrap/Card';
+import { useCallback } from 'react';
+import { Card, Row, Col, Button } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 
 import {
   getBackgroundIndicator, getArrowIndicator, getSignIndicator
 } from '../utils';
 
-export function AssetCurrentPrice({ asset }) {
+export function AssetCurrentPrice({ asset, onRemove }) {
+
+  const removeAssetClick = useCallback(() => {
+    onRemove(asset.name);
+  }, [onRemove, asset]);
+
   return (
     <Card>
       <Card.Body style={{
@@ -13,18 +19,28 @@ export function AssetCurrentPrice({ asset }) {
         color: 'white',
       }}>
         <Card.Title>
-          <b>
-            {asset.name} {asset.price}
-            {getArrowIndicator(asset.priceChange)}
-          </b>
-          <span className="ms-4">
-            {getSignIndicator(asset.priceChange)}
-            {asset.priceChange.toFixed(2)}
-          </span>
-          <span className="ms-2">
-            ({getSignIndicator(asset.priceChange)}
-            {asset.pricePercentChange.toFixed(2)}%)
-          </span>
+          <Row>
+            <Col xs={9}>
+              <b>
+                {asset.name} {asset.price}
+                {getArrowIndicator(asset.priceChange)}
+              </b>
+              <span className="ms-4">
+                {getSignIndicator(asset.priceChange)}
+                {asset.priceChange.toFixed(2)}
+              </span>
+              <span className="ms-2">
+                ({getSignIndicator(asset.priceChange)}
+                {asset.pricePercentChange.toFixed(2)}%)
+              </span>
+            </Col>
+            <Col xs={3} className="text-end">
+              <Button variant='light' onClick={removeAssetClick}>
+                <i className="bi bi-trash"></i>
+              </Button>
+            </Col>
+          </Row>
+
         </Card.Title>
         <Card.Text>
           Last Updated: {asset.lastUpdated}

@@ -51,6 +51,26 @@ export const refreshWatchListAsync = createAsyncThunk(
   }, 200),
 );
 
+export const removeStockFromWatchListAsync = createAsyncThunk(
+  'stockTool/removeStockFromWatchList',
+  async (stockSymbol) => {
+    const stockWatchLists = await fetchWatchList('My Stocks');
+    const stockWatchList = stockWatchLists[0];
+    if (!stockWatchList.stockSymbols.includes(stockSymbol)) {
+      return;
+    }
+
+    const stockSymbolIndex = stockWatchList.stockSymbols.findIndex(theStockSymbol => {
+      return stockSymbol === theStockSymbol;
+    });
+    stockWatchList.stockSymbols.splice(stockSymbolIndex, 1);
+
+    await saveWatchList(stockWatchList);
+
+    return stockSymbol;
+  },
+);
+
 
 
 export const stockToolSlice = createSlice({
@@ -106,6 +126,21 @@ export const stockToolSlice = createSlice({
             lastUpdated: new Date(stockData.t).toLocaleString(),
           };
         });
+      })
+      .addCase(removeStockFromWatchListAsync.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(removeStockFromWatchListAsync.fulfilled, (state, action) => {
+
+        state.status = 'idle';
+
+        if (!action.payload) {
+          return;
+        }
+
+        const stockSymbol = action.payload;
+        const stockIndex = state.stocks.findIndex(s => s.symbol === stockSymbol);
+        state.stocks.splice(stockIndex, 1);
       });
   },
 });
