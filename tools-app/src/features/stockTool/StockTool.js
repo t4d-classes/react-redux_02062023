@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useCallback, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import {
@@ -7,9 +7,12 @@ import {
   refreshWatchListAsync,
 } from './stockToolSlice';
 
-import { Button, Container, Row, Col, Form } from 'react-bootstrap';
+import { Button, Container, Row, Col } from 'react-bootstrap';
 
-import { ToolHeader, SectionHeader, AssetCurrentPrice } from '../../components';
+import {
+  ToolHeader, SectionHeader,
+  AssetCurrentPrice, AssetLookup
+} from '../../components';
 
 
 export function StockTool() {
@@ -18,32 +21,17 @@ export function StockTool() {
 
   const dispatch = useDispatch();
 
-  const [
-    stockSymbolInput, // state value on each render
-    setStockSymbolInput, // function to update the state value and trigger a re-render
-  ] = useState('' /* initial state value on the first render */);
 
   const stockSymbolInputElement = useRef(null);
 
-  const stockSymbolInputChange = useCallback((evt) => {
-
-    // evt is the event object for the onChange event
-    // target will be the input field that triggered the change event
-    // value is the value of the input field
-    setStockSymbolInput(evt.target.value);
-
-  }, []);
-
   const addStockToWatchListSubmit = useCallback(
-    (evt) => {
-      evt.preventDefault();
-      dispatch(addToWatchListAsync(stockSymbolInput));
-      setStockSymbolInput('');
+    (stockSymbol) => {
+      dispatch(addToWatchListAsync(stockSymbol));
       if (stockSymbolInputElement.current) {
         stockSymbolInputElement.current.focus();
       }
     },
-    [dispatch, stockSymbolInput],
+    [dispatch],
   );
 
   useEffect(() => {
@@ -55,6 +43,9 @@ export function StockTool() {
 
   const refreshWatchListClick = useCallback(() => {
     dispatch(refreshWatchListAsync());
+    if (stockSymbolInputElement.current) {
+      stockSymbolInputElement.current.focus();
+    }
   }, [dispatch]);
 
   return (
@@ -67,24 +58,10 @@ export function StockTool() {
       <SectionHeader headerText="Stock Lookup" />
       <Row>
         <Col>
-          <Form onSubmit={addStockToWatchListSubmit}>
-            <Form.Group as={Row}>
-              <Form.Label column>Stock Symbol</Form.Label>
-              <Col>
-                <Form.Control
-                  type="text"
-                  ref={stockSymbolInputElement}
-                  value={stockSymbolInput}
-                  aria-label="Set stock symbol"
-                  onChange={stockSymbolInputChange} />
-              </Col>
-              <Col>
-                <Button variant="primary" type="submit">
-                  Add to Watch List
-                </Button>
-              </Col>
-            </Form.Group>
-          </Form>
+          <AssetLookup
+            assetTypeLabel="Stock Symbol"
+            onSubmit={addStockToWatchListSubmit}
+            ref={stockSymbolInputElement} />
         </Col>
       </Row>
       <Row className="mt-4">

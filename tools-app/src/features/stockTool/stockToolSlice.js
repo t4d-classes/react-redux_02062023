@@ -8,7 +8,7 @@ import {
 import debounce from 'lodash.debounce';
 
 const initialState = {
-  stocks: [],
+  stocks: [], // the structure of the stock object is no longer apparent
   status: 'idle',
 };
 
